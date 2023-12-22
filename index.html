@@ -25,7 +25,6 @@
         require([
             "esri/Map",
             "esri/request",
-            "esri/config",
             "esri/core/reactiveUtils",
             "esri/geometry/support/webMercatorUtils",
             "esri/layers/GraphicsLayer",
@@ -35,7 +34,6 @@
         ], (
             Map,
             esriRequest,
-            esriConfig,
             reactiveUtils,
             webMercatorUtils,
             GraphicsLayer,
@@ -121,7 +119,7 @@
               varying float v_side;
               varying vec4 v_color;
 
-              const float TRAIL_SPEED = 50.0;
+              const float TRAIL_SPEED = 300.0;
               const float TRAIL_LENGTH = 300.0;
               const float TRAIL_CYCLE = 1000.0;
 
@@ -542,7 +540,7 @@
             const view = new MapView({
                 container: "viewDiv",
                 map: map,
-                center: [-1.261,40.022],
+                center: [-1.261, 40.022],
                 zoom: 10,
             });
 
@@ -558,43 +556,32 @@
             }
 
             function createLayer(features) {
-                console.log('feature', features)
                 const graphics = features.data.features.map((feature) => {
-                    console.log('f', feature)
                     return {
                         attributes: {
                             "color": randomRgbColor()
                         },
-                        geometry: {
+                        geometry: webMercatorUtils.geographicToWebMercator({
                             paths: feature.geometry.paths,
                             type: "polyline",
                             spatialReference: {
                                 wkid: 4326
                             }
-                        }
+                        })
                     }
                 });
 
                 const layer = new CustomLayer({
-                    graphics: graphics
+                    effect: "bloom(1.5, 0.5px, 0.1)",
+                    graphics: graphics, 
+                    
                 });
-                console.log('graphic', graphics[0])
                 map.layers.add(layer);
-            }
+            };
+            const layer = 'https://services1.arcgis.com/YFraetVkEAF1lMag/ArcGIS/rest/services/Tensor_municipio_100/FeatureServer/0';
 
+            const url = `${layer}/query?where=1%3D1&outFields=*&returnGeometry=true&returnExceededLimitFeatures=true&f=pjson&token=`;
 
-            // URL pruebas
-            const url = "https://services1.arcgis.com/YFraetVkEAF1lMag/ArcGIS/rest/services/PruebasLineas/FeatureServer/0/query?where=1%3D1&outFields=*&returnGeometry=true&returnExceededLimitFeatures=true&f=pjson&token="
-
-            // const layer = 'https://services1.arcgis.com/YFraetVkEAF1lMag/ArcGIS/rest/services/Tensor_municipio_100/FeatureServer/0'
-
-            // const url = `${layer}/query?where=1%3D1&outFields=*&returnGeometry=true&returnExceededLimitFeatures=true&f=pjson&token=`
-
-            // URL lineas Valencia
-            // const url = "https://services1.arcgis.com/YFraetVkEAF1lMag/ArcGIS/rest/services/Tensor_municipio_100/FeatureServer/0/query?where=1%3D1&outFields=*&returnGeometry=true&returnExceededLimitFeatures=true&f=pjson&token="
-
-            // URL lineas Valencia completa
-            // const url ="https://services1.arcgis.com/YFraetVkEAF1lMag/ArcGIS/rest/services/Tensor_municipio_100/FeatureServer/0/query?where=1%3D1&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&relationParam=&returnGeodetic=false&outFields=OID&returnGeometry=true&returnEnvelope=false&featureEncoding=esriDefault&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&defaultSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnQueryGeometry=false&returnDistinctValues=false&cacheHint=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=pjson&token="
 
             const options = {
                 query: {
