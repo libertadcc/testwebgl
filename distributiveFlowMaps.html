@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Distributive Flow Maps</title>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.8.1/gl-matrix.js"></script>
+
+    <link rel="stylesheet" href="https://js.arcgis.com/4.28/esri/themes/light/main.css" />
+    <script src="https://js.arcgis.com/4.28/"></script>
+
+    <style>
+        html,
+        body,
+        #viewDiv {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+
+    <script>
+        require([
+            "esri/Map",
+            "esri/views/MapView",
+            "esri/layers/FeatureLayer"
+        ], (
+            Map,
+            MapView,
+            FeatureLayer
+        ) => {
+            const map = new Map({
+                basemap: {
+                    portalItem: {
+                        id: "9d5cf81cf8ce437584cedc8a2ee4ea4e"
+                    }
+                }
+            });
+
+            const view = new MapView({
+                container: "viewDiv",
+                map: map,
+                center: [-0.4013, 39.464],
+                zoom: 12,
+            });
+
+            const conex = new FeatureLayer({
+                url: "https://services1.arcgis.com/YFraetVkEAF1lMag/arcgis/rest/services/Origen_Ademuz_Destinos_varios/FeatureServer/0",
+                renderer: {
+                type: "simple",
+                symbol: {
+                    type: "simple-line",
+                    color: "lightblue",
+                    style: "solid"
+                },
+                visualVariables: [
+                    {
+                        type: "size",
+                        field: "recuento",
+                        minDataValue: 20,
+                        maxDataValue: 5700,
+                        minSize: 4,
+                        maxSize: 14
+                    }
+                ]
+            }
+            });
+
+            map.add(conex)
+        });
+    </script>
+</head>
+
+<body>
+    <div id="viewDiv"></div>
+</body>
+
+</html>

@@ -1,0 +1,80 @@
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>Animated lines with WebGL | Sample | ArcGIS Maps SDK for JavaScript 4.28</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.8.1/gl-matrix.js"></script>
+
+    <link rel="stylesheet" href="https://js.arcgis.com/4.28/esri/themes/light/main.css" />
+    <script src="https://js.arcgis.com/4.28/"></script>
+
+    <style>
+        html,
+        body,
+        #viewDiv {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+
+    <script>
+        require([
+            "esri/Map",
+            "esri/layers/GraphicsLayer",
+            "esri/layers/FeatureLayer",
+            "esri/views/MapView",
+            "esri/geometry/geometryEngine",
+            "esri/Graphic",
+        ], (Map, GraphicsLayer, FeatureLayer, MapView, geometryEngine, Graphic) => {
+            const map = new Map({
+                basemap: "gray-vector"
+            });
+
+            const view = new MapView({
+                container: "viewDiv",
+                map: map,
+                center: [-1.261, 40.022],
+                zoom: 15,
+            });
+
+            const linesLayer = new FeatureLayer({
+                url: "https://services1.arcgis.com/YFraetVkEAF1lMag/arcgis/rest/services/Tensor_municipio_100/FeatureServer/0"
+            });
+
+            linesLayer.queryFeatures().then(results => {
+                const lines = results.features;
+                lines.forEach(feature => {
+                    var denseGeometry = geometryEngine.geodesicDensify(feature.geometry, 1000)
+                    console.log(denseGeometry);
+
+                    var graphic = new Graphic({
+                        geometry: denseGeometry,
+                        symbol: {
+                            type: "simple-line", // autocasts as new SimpleFillSymbol
+                            color: [4, 90, 141],
+                            width: 4,
+                            cap: "round",
+                            join: "round"
+                        }
+                    });
+
+                    view.graphics.add(graphic)
+                })
+            })
+
+
+
+        });        
+    </script>
+
+</head>
+
+<body>
+    <div id="viewDiv"></div>
+</body>
+
+</html>

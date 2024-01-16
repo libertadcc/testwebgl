@@ -28,7 +28,6 @@
             "esri/core/reactiveUtils",
             "esri/geometry/support/webMercatorUtils",
             "esri/layers/GraphicsLayer",
-            "esri/layers/FeatureLayer",
             "esri/views/MapView",
             "esri/views/2d/layers/BaseLayerViewGL2D"
         ], (
@@ -37,7 +36,6 @@
             reactiveUtils,
             webMercatorUtils,
             GraphicsLayer,
-            FeatureLayer,
             MapView,
             BaseLayerViewGL2D
         ) => {
@@ -120,7 +118,7 @@
               varying vec4 v_color;
 
               const float TRAIL_SPEED = 300.0;
-              const float TRAIL_LENGTH = 300.0;
+              const float TRAIL_LENGTH = 2000.0;
               const float TRAIL_CYCLE = 1000.0;
 
               void main(void) {
@@ -570,6 +568,7 @@
                         })
                     }
                 });
+               
 
                 const layer = new CustomLayer({
                     effect: "bloom(1.5, 0.5px, 0.1)",
